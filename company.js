@@ -1,6 +1,7 @@
 var Plugin = require('../plugin');
 
-var plugin = new Plugin(100, 'Company', '2017.07.24',
+// config: None
+var plugin = new Plugin(100, 'company', '2017.07.25',
     'Plugin to query by company for free user.');
 
 // NOTE: those data is collected from different websites that has similar questions:
