@@ -3,6 +3,16 @@
 
 ## HOWTO
 
-Put the plugin file in the `lib/plugins/` folder in leetcode-cli repo.
+You can install the plugins in either ways below:
 
-TODO: provide command to install/remove plugins.
+### Install Command
+
+    $ leetcode install <plugin file>
+
+### Install Manually
+
+Copy the plugin file to the sub folder `lib/plugins/` where leetcode-cli installed.
+
+E.g. On Linux/Mac, the path would be like: `/usr/local/lib/node_modules/leetcode-cli/lib/plugins/`
+
+Tips: You can find the path by running `npm`, check the last line of the output.
