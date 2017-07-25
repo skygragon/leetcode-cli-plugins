@@ -1,6 +1,9 @@
 var Plugin = require('../plugin');
 
-// config: None
+// [prerequisite]
+//
+// [config]
+//
 var plugin = new Plugin(100, 'company', '2017.07.25',
     'Plugin to query by company for free user.');
 
