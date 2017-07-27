@@ -13,7 +13,7 @@ var Plugin = require('../plugin');
 // You can disable/enable some checks in "flags" section.
 //
 // "PLUGINS": {
-//   "cpplint": {
+//   "cpp.lint": {
 //     "bin": "<path of cpplint script>",
 //     "flags": [
 //       "-whitespace/indent",
@@ -21,7 +21,7 @@ var Plugin = require('../plugin');
 //     ]
 //   }
 // }
-var plugin = new Plugin(100, 'cpplint', '2017.07.25',
+var plugin = new Plugin(100, 'cpp.lint', '2017.07.27',
     'Plugin to do static code check on c++ code.');
 
 var DEFAULT_FLAGS = [

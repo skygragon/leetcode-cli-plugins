@@ -1,15 +1,20 @@
 # leetcode-cli-plugins
 3rd party plugins for leetcode-cli
 
+|Plugin|Description|
+|-|-|
+|company.js|Filter question by company tag.|
+|cpp.lint.js|Run cpplint to check syntax before running test.|
+
 ## HOWTO
 
 You can install the plugins in either ways below:
 
-### Install Command
+### Quick Install
 
     $ leetcode install <plugin file>
 
-### Install Manually
+### Manually Install
 
 Copy the plugin file to the sub folder `lib/plugins/` where leetcode-cli installed.
 
