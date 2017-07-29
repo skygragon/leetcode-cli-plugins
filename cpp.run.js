@@ -44,7 +44,7 @@ plugin.testProblem = function(problem, cb) {
     // array, list, tree, etc
     var t = meta.params[i].type;
     if (t.indexOf('[]') >= 0 || t === 'ListNode' || t === 'TreeNode')
-      x = x.replace('[', '{').replace(']', '}');
+      x = x.replace(/\[/g, '{').replace(/\]/g, '}');
     if (t === 'ListNode') x = 'make_listnode(' + x + ')';
     if (t === 'TreeNode') x = 'make_treenode(' + x + ')';
 
