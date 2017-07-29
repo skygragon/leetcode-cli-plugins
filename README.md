@@ -5,6 +5,7 @@
 |-|-|
 |company.js|Filter question by company tag.|
 |cpp.lint.js|Run cpplint to check syntax before running test.|
+|cpp.run.js|Run cpp code locally for debugging purpose.|
 
 ## HOWTO
 
