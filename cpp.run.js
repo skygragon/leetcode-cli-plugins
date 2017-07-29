@@ -28,7 +28,18 @@ plugin.testProblem = function(problem, cb) {
 
   // generate full cpp source code that runnable
   var meta = problem.templateMeta;
-  var args = problem.testcase.split('\n').map(function(x, i) {
+
+  var code = fs.readFileSync(problem.file).toString();
+  var re = code.match(new RegExp(' ' + meta.name + '\\((.+)\\)'));
+  if (!re) return cb('failed to generate runnable code!');
+
+  var types = re[1].split(',').map(function(x) {
+    var parts = x.trim().split(' ');
+    parts.pop();  // skip param name
+    return parts.join(' ');
+  });
+
+  var values = problem.testcase.split('\n').map(function(x, i) {
     // TODO: handle more special types??
     // array, list, tree, etc
     var t = meta.params[i].type;
@@ -40,9 +51,15 @@ plugin.testProblem = function(problem, cb) {
     return x;
   });
 
-  var data = DATA.replace('$code', fs.readFileSync(problem.file))
+  var data = DATA.replace('$code', code)
     .replace('$method', meta.name)
-    .replace('$args', args.join(','));
+    .replace('$argDefs', values.map(function(x, i) {
+      return '  decay<' + types[i] + '>::type ' + 'p' + i + ' = ' + x + ';';
+    }).join('\n'))
+    .replace('$args', values.map(function(x, i) {
+      return 'p' + i;
+    }).join(','));
+
   fs.writeFileSync(FILE_SRC, data);
 
   // compile and run
@@ -197,6 +214,7 @@ ostream& operator<<(ostream &os, const TreeNode *t) {
 $code
 int main() {
   Solution s;
+$argDefs
   auto res = s.$method($args);
   cout << res << endl;
   return 0;
