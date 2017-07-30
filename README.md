@@ -2,9 +2,9 @@
 3rd party plugins for leetcode-cli.
 
 * [company.js](#company)
-* [cpp.lint.js](#cpp.lint)
-* [cpp.run.js](#cpp.run)
-* [solution.discuss](#solution.discuss)
+* [cpp.lint.js](#cpplint)
+* [cpp.run.js](#cpprun)
+* [solution.discuss](#solutiondiscuss)
 
 ## HOWTO
 
