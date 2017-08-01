@@ -12,7 +12,7 @@ You can install the plugins in either ways below:
 
 ### Quick Install
 
-    $ leetcode install <plugin file>
+    $ leetcode plugin -i <plugin file>
 
 To manage the installed plugins, please check [leetcode-cli's user guide](https://skygragon.github.io/leetcode-cli/commands#plugin).
 
