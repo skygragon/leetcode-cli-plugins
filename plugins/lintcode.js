@@ -304,8 +304,15 @@ plugin.submitProblem = function(problem, cb) {
   });
 };
 
+plugin.getSubmissions = function(problem, cb) {
+  return cb('Not implemented');
+};
+
 plugin.getSubmission = function(submission, cb) {
-  // FIXME
+  return cb('Not implemented');
+};
+
+plugin.starProblem = function(problem, starred, cb) {
   return cb('Not implemented');
 };
 

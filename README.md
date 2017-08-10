@@ -1,9 +1,10 @@
 # leetcode-cli-plugins
 3rd party plugins for leetcode-cli.
 
-* [company.js](/docs/company.md)
-* [cpp.lint.js](/docs/cpp.lint.md)
-* [cpp.run.js](/docs/cpp.run.md)
+* [company](/docs/company.md)
+* [cpp.lint](/docs/cpp.lint.md)
+* [cpp.run](/docs/cpp.run.md)
+* [lintcode](/docs/lintcode.md)
 * [solution.discuss](/docs/solution.discuss.md)
 
 ## HOWTO
