@@ -1,0 +1,29 @@
+{
+  "name": "leetcode-cli-plugins",
+  "version": "1.0.0",
+  "description": "3rd party plugins for leetcode-cli.",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "lint": "eslint plugins/",
+    "test": "npm run lint"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/skygragon/leetcode-cli-plugins.git"
+  },
+  "author": {
+    "name": "Eric Wang",
+    "email": "skygragon@gmail.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/skygragon/leetcode-cli-plugins/issues"
+  },
+  "homepage": "https://github.com/skygragon/leetcode-cli-plugins#readme",
+  "devDependencies": {
+    "eslint": "^4.4.1",
+    "eslint-config-google": "^0.9.1"
+  }
+}

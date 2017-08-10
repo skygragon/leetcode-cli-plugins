@@ -98,7 +98,7 @@ plugin.getProblems = function(cb) {
 };
 
 plugin.getPageProblems = function(page, cb) {
-  log.debug('running lintcode.getPageProblems: ' +  page);
+  log.debug('running lintcode.getPageProblems: ' + page);
   var opts = makeOpts(config.URL_PROBLEMS.replace('$page', page));
 
   request(opts, function(e, resp, body) {

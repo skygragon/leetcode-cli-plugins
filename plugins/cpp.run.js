@@ -35,7 +35,7 @@ plugin.testProblem = function(problem, cb) {
 
   var types = re[1].split(',').map(function(x) {
     var parts = x.trim().split(' ');
-    parts.pop();  // skip param name
+    parts.pop(); // skip param name
     return parts.join(' ');
   });
 
