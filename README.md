@@ -1,12 +1,14 @@
 # leetcode-cli-plugins
 3rd party plugins for leetcode-cli.
 
-* [company](/docs/company.md)
-* [cpp.lint](/docs/cpp.lint.md)
-* [cpp.run](/docs/cpp.run.md)
-* [github](/docs/github.md)
-* [lintcode](/docs/lintcode.md)
-* [solution.discuss](/docs/solution.discuss.md)
+|Plugin|Description|Enhanced Commands|
+|-|-|-|
+|[company](/docs/company.md)|Filter questions by company|`list`|
+|[cpp.lint](/docs/cpp.lint.md)|C++ code syntax check|`test`|
+|[cpp.run](/docs/cpp.run.md)|Test C++ code locally|`test`|
+|[github](/docs/github.md)|Commit accpeted code to GitHub|`submit`|
+|[lintcode](/docs/lintcode.md)|Fight questions from lintcode.com|`list` `show` `test` `submit` `user`|
+|[solution.discuss](/docs/solution.discuss.md)|Fetch top voted solution|`show`|
 
 ## HOWTO
 
