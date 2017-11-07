@@ -16,7 +16,17 @@ You can install the plugins in either ways below:
 
 ### Quick Install
 
-    $ leetcode plugin -i <plugin js file>
+Install from GitHub:
+
+    $ leetcode plugin -i <plugin name>
+    
+*Example*
+
+    $ leetcode plugin -i company
+    
+Install from local file:
+
+    $ leetcode plugin -i <plugin js file>
 
 To manage the installed plugins, please check [leetcode-cli's user guide](https://skygragon.github.io/leetcode-cli/commands#plugin).
 
