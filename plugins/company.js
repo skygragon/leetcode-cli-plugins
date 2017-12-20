@@ -1,8 +1,9 @@
 var Plugin = require('../plugin');
 
-// [prerequisite]
 //
-// [config]
+// [Usage]
+//
+// https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/company.md
 //
 var plugin = new Plugin(100, 'company', '2017.12.18',
     'Plugin to query by company for free user.');

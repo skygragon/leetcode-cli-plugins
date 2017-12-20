@@ -3,24 +3,11 @@ var cp = require('child_process');
 var log = require('../log');
 var Plugin = require('../plugin');
 
-// [prerequisite]
 //
-// Need install cpplint:
-//   https://raw.githubusercontent.com/google/styleguide/gh-pages/cpplint/cpplint.py
+// [Usage]
 //
-// [config]
+// https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/cpp.lint.md
 //
-// You can disable/enable some checks in "flags" section.
-//
-// "PLUGINS": {
-//   "cpp.lint": {
-//     "bin": "<path of cpplint script>",
-//     "flags": [
-//       "-whitespace/indent",
-//       <other flags>
-//     ]
-//   }
-// }
 var plugin = new Plugin(100, 'cpp.lint', '2017.07.27',
     'Plugin to do static code check on c++ code.');
 

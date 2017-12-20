@@ -4,7 +4,7 @@ Run cpplint to check c++ code syntax before running `test` against leetcode.com.
 
 ## Requirement
 
-* `cpplint.py`: [download](https://raw.githubusercontent.com/google/styleguide/gh-pages/cpplint/cpplint.py) 
+* need install`cpplint.py`: [download](https://raw.githubusercontent.com/google/styleguide/gh-pages/cpplint/cpplint.py)
 
 ## Config
 
@@ -13,12 +13,21 @@ Run cpplint to check c++ code syntax before running `test` against leetcode.com.
 	* `+` to enable specific checking.
 	* `-` to disable specific checking.
 
+*Set Config*
+
+	$ leetcode config plugins:cpp.lint:bin <path of cpplint>
+	$ leetcode config plugins:cpp.lint:flags '["-whitespace/indent"]'
+
+*Unset Config*
+
+	$ leetcode config -d plugins:cpp.lint
+
 *Example*
 
 	{
-		"PLUGINS": {
+		"plugins": {
 			"cpp.lint": {
-				"bin": "<path of cpplint script>",
+				"bin": "/usr/bin/cpplint.py",
 				"flags": [
 					"-whitespace/indent"
 				]

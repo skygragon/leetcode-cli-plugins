@@ -5,18 +5,11 @@ var h = require('../helper');
 var log = require('../log');
 var Plugin = require('../plugin');
 
-// [prerequisite]
 //
-// - create a new access token on your github repo setting. (TBD)
+// [Usage]
 //
-// [config]
+// https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/github.md
 //
-// "PLUGINS": {
-//   "github": {
-//     "repo": "https://github.com/<your_name>/<your_repo>/<folder_you_like>",
-//     "token": "<token created above>"
-//   }
-// }
 var plugin = new Plugin(100, 'github', '2017.08.10',
     'Plugin to commit accepted code to your own github repo.',
     ['github']);

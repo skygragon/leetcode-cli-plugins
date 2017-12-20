@@ -6,6 +6,11 @@ var chalk = require('../chalk');
 var Plugin = require('../plugin');
 var session = require('../session');
 
+//
+// [Usage]
+//
+// https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/solution.discuss.md
+//
 var plugin = new Plugin(200, 'solution.discuss', '2017.07.29',
     'Plugin to fetch most voted solution in discussions.');
 

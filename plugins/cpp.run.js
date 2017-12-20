@@ -11,9 +11,10 @@ var session = require('../session');
 //
 // Only works for those problems could be easily tested.
 //
-// [prerequisite]
+// [Usage]
 //
-// - g++ (support c++11)
+// https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/cpp.run.md
+//
 var plugin = new Plugin(100, 'cpp.run', '2017.07.29',
     'Plugin to run cpp code locally for debugging.');
 

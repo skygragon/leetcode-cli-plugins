@@ -10,7 +10,7 @@ NOTE: not fully support all the questions!
 
 ## Requirement
 
-* `g++` with c++11 support.
+* need install `g++` with c++11 support.
 
 ## Usage
 

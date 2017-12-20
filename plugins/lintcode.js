@@ -14,6 +14,10 @@ var session = require('../session');
 // TODO: star/submissions/submission
 // FIXME: why [ERROR] Error: read ECONNRESET [0]??
 //
+// [Usage]
+//
+// https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/lintcode.md
+//
 var plugin = new Plugin(15, 'lintcode', '2017.08.04',
     'Plugin to talk with lintcode APIs.');
 
