@@ -23,10 +23,6 @@ Install from GitHub:
 *Example*
 
     $ leetcode plugin -i company
-    
-Install from local file:
-
-    $ leetcode plugin -i <filepath/plugin.js>
 
 To manage the installed plugins, please check [leetcode-cli's user guide](https://skygragon.github.io/leetcode-cli/commands#plugin).
 
