@@ -12,7 +12,7 @@ var session = require('../session');
 //
 // https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/solution.discuss.md
 //
-var plugin = new Plugin(200, 'solution.discuss', '2017.07.29',
+var plugin = new Plugin(200, 'solution.discuss', '2017.12.21',
     'Plugin to fetch most voted solution in discussions.');
 
 var URL_DISCUSSES = 'https://discuss.leetcode.com/api/category/';
