@@ -8,7 +8,13 @@ var session = require('../session');
 //
 var plugin = new Plugin(13, 'cookie.chrome', '2017.12.23',
     'Plugin to reuse Chrome\'s leetcode cookie.',
-    ['keytar', 'sqlite3']);
+    ['keytar:darwin', 'sqlite3']);
+
+plugin.help = function() {
+  if (os.platform === 'linux') {
+    log.info('To complete the install: sudo apt install libsecret-tools');
+  }
+};
 
 var Chrome = {};
 
@@ -21,11 +27,15 @@ var ChromeMAC = {
   }
 };
 
-// TODO: test this
 var ChromeLinux = {
   db:          process.env.HOME + '/.config/google-chrome/Default/Cookies',
   iterations:  1,
-  getPassword: function(cb) { cb('peanuts'); }
+  getPassword: function(cb) {
+    // FIXME: keytar failed to read gnome-keyring on ubuntu??
+    var cmd = 'secret-tool lookup application chrome';
+    var password = require('child_process').execSync(cmd).toString();
+    return cb(password);
+  }
 };
 
 var ChromeWindows = {
