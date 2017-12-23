@@ -1,11 +1,12 @@
 var log = require('../log');
 var Plugin = require('../plugin');
+var session = require('../session');
 
 // [Usage]
 //
 // TODO: still WIP
 //
-var plugin = new Plugin(100, 'cookie.chrome', '2017.12.22',
+var plugin = new Plugin(13, 'cookie.chrome', '2017.12.23',
     'Plugin to reuse Chrome\'s leetcode cookie.',
     ['keytar', 'sqlite3']);
 
@@ -101,17 +102,27 @@ Chrome.getCookies = function(cb) {
 };
 
 plugin.signin = function(user, cb) {
+  log.debug('running cookie.chrome.signin');
   log.debug('try to copy leetcode cookies from chrome ...');
   my.getCookies(function(e, cookie) {
     if (e) {
-      log.error('failed to get cookies: ' + e);
+      log.error('failed to copy cookies: ' + e);
       return plugin.next.signin(user, cb);
     }
 
     log.debug('Successfully copied leetcode cookies!');
     user.sessionId = cookie.LEETCODE_SESSION;
     user.sessionCSRF = cookie.csrftoken;
+    session.saveUser(user);
     return cb(null, user);
+  });
+};
+
+plugin.login = function(user, cb) {
+  log.debug('running cookie.chrome.login');
+  plugin.signin(user, function(e, user) {
+    if (e) return cb(e);
+    plugin.getUser(user, cb);
   });
 };
 
