@@ -1,3 +1,5 @@
+var path = require('path');
+
 var log = require('../log');
 var Plugin = require('../plugin');
 var session = require('../session');
@@ -8,11 +10,17 @@ var session = require('../session');
 //
 var plugin = new Plugin(13, 'cookie.chrome', '2017.12.23',
     'Plugin to reuse Chrome\'s leetcode cookie.',
-    ['keytar:darwin', 'sqlite3']);
+    ['ffi:win32', 'keytar:darwin', 'ref:win32', 'ref-struct:win32', 'sqlite3']);
 
 plugin.help = function() {
-  if (process.platform === 'linux') {
-    log.info('To complete the install: sudo apt install libsecret-tools');
+  switch (process.platform) {
+    case 'darwin':
+      break;
+    case 'linux':
+      log.info('To complete the install: sudo apt install libsecret-tools');
+      break;
+    case 'win32':
+      break;
   }
 };
 
@@ -39,7 +47,8 @@ var ChromeLinux = {
 };
 
 var ChromeWindows = {
-  // TODO
+  db:          path.resolve(process.env.APPDATA || '', '../Local/Google/Chrome/User Data/Default/Cookies'),
+  getPassword: function(cb) { cb(); }
 };
 
 Object.setPrototypeOf(ChromeMAC, Chrome);
@@ -54,6 +63,32 @@ Chrome.getInstance = function() {
   }
 };
 var my = Chrome.getInstance();
+
+ChromeWindows.decodeCookie = function(cookie, cb) {
+  var ref = require('ref');
+  var ffi = require('ffi');
+  var Struct = require('ref-struct');
+
+  var DATA_BLOB = Struct({
+    cbData: ref.types.uint32,
+    pbData: ref.refType(ref.types.byte)
+  });
+  var PDATA_BLOB = new ref.refType(DATA_BLOB);
+  var Crypto = new ffi.Library('Crypt32', {
+    'CryptUnprotectData': ['bool', [PDATA_BLOB, 'string', 'string', 'void *', 'string', 'int', PDATA_BLOB]]
+  });
+
+  var inBlob = new DATA_BLOB();
+  inBlob.pbData = cookie;
+  inBlob.cbData = cookie.length;
+  var outBlob = ref.alloc(DATA_BLOB);
+
+  Crypto.CryptUnprotectData(inBlob.ref(), null, null, null, null, 0, outBlob);
+  var outDeref = outBlob.deref();
+  var buf = ref.reinterpret(outDeref.pbData, outDeref.cbData, 0);
+
+  return cb(null, buf.toString('utf8'));
+};
 
 Chrome.decodeCookie = function(cookie, cb) {
   var crypto = require('crypto');
@@ -114,15 +149,15 @@ Chrome.getCookies = function(cb) {
 plugin.signin = function(user, cb) {
   log.debug('running cookie.chrome.signin');
   log.debug('try to copy leetcode cookies from chrome ...');
-  my.getCookies(function(e, cookie) {
+  my.getCookies(function(e, cookies) {
     if (e) {
       log.error('failed to copy cookies: ' + e);
       return plugin.next.signin(user, cb);
     }
 
     log.debug('Successfully copied leetcode cookies!');
-    user.sessionId = cookie.LEETCODE_SESSION;
-    user.sessionCSRF = cookie.csrftoken;
+    user.sessionId = cookies.LEETCODE_SESSION;
+    user.sessionCSRF = cookies.csrftoken;
     session.saveUser(user);
     return cb(null, user);
   });
