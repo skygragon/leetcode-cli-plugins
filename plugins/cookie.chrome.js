@@ -11,7 +11,7 @@ var plugin = new Plugin(13, 'cookie.chrome', '2017.12.23',
     ['keytar:darwin', 'sqlite3']);
 
 plugin.help = function() {
-  if (os.platform === 'linux') {
+  if (process.platform === 'linux') {
     log.info('To complete the install: sudo apt install libsecret-tools');
   }
 };
