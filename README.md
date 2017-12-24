@@ -35,16 +35,16 @@ Take `gitHub` plugin for example:
 
 Set configs:
 
-	$ leetcode config plugins.github.token 12345678
+	$ leetcode config plugins:github:token 12345678
 
 Show configs:
 
-	$ leetcode config plugins.github
+	$ leetcode config plugins:github
 	$ leetcode plugin -c github
 
 Delete configs:
 
-	$ leetcode config -d plugins.github
+	$ leetcode config -d plugins:github
 
 **NOTE: Check [leetcode-cli's configuration guide](https://skygragon.github.io/leetcode-cli/advanced#configuration) for more details.**
 
