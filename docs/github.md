@@ -18,7 +18,7 @@ Auto commit the accepted code to your own (public) GitHub repo.
 
 *Unset Config*
 
-	$ leetcode config -f plugins:github
+	$ leetcode config -d plugins:github
 
 *Example*
 
