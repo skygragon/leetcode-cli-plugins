@@ -1,8 +1,15 @@
 # leetcode-cli-plugins
+
+<img src="docs/logo.png" align="right">
+
 3rd party plugins for leetcode-cli.
 
-|Plugin|Description|Enhanced Commands|
-|------|-----------|-----------------|
+See what [leetcode-cli](https://github.com/skygragon/leetcode-cli) is.
+
+## Plugins
+
+|Name|Description|Enhanced Commands|
+|----|-----------|-----------------|
 |[company](/docs/company.md)|Filter questions by company or tags|`list`|
 |[cookie.chrome](/docs/cookie.chrome.md)|Don't expire Chrome's session on same computer|`login`|
 |[cpp.lint](/docs/cpp.lint.md)|C++ code syntax check|`test`|
