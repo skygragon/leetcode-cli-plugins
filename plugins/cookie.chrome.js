@@ -2,6 +2,7 @@ var path = require('path');
 
 var log = require('../log');
 var Plugin = require('../plugin');
+var Queue = require('../queue');
 var session = require('../session');
 
 // [Usage]
@@ -110,37 +111,36 @@ Chrome.decodeCookie = function(cookie, cb) {
   });
 };
 
-Chrome.decodeCookies = function(keys, cb) {
-  if (keys.length === 0) return cb(null, my.cookies);
+function doDecode(key, queue, cb) {
+  var ctx = queue.ctx;
+  var cookie = ctx[key];
+  if (!cookie) return cb('Not found cookie: ' + key);
 
-  var k = keys.pop();
-  var v = my.cookies[k];
-  if (!v) return cb('Not found cookie: ' + k);
-
-  my.decodeCookie(v, function(e, cookie) {
-    my.cookies[k] = cookie;
-    my.decodeCookies(keys, cb);
+  my.decodeCookie(cookie, function(e, cookie) {
+    ctx[key] = cookie;
+    return cb();
   });
-};
+}
 
-var KEYS = ['csrftoken', 'LEETCODE_SESSION'];
 Chrome.getCookies = function(cb) {
   var sqlite3 = require('sqlite3');
   var db = new sqlite3.Database(my.db);
+  var KEYS = ['csrftoken', 'LEETCODE_SESSION'];
 
   db.serialize(function() {
-    my.cookies = {};
+    var cookies = {};
     var sql = 'select name, encrypted_value from cookies where host_key like "%leetcode.com"';
     db.each(sql, function(e, x) {
       if (e) return cb(e);
       if (KEYS.indexOf(x.name) < 0) return;
-      my.cookies[x.name] = x.encrypted_value;
+      cookies[x.name] = x.encrypted_value;
     });
 
     db.close(function() {
       my.getPassword(function(password) {
         my.password = password;
-        my.decodeCookies(KEYS, cb);
+        var q = new Queue(KEYS, cookies, doDecode);
+        q.run(null, cb);
       });
     });
   });
