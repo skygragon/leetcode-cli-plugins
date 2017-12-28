@@ -12,6 +12,7 @@ See what [leetcode-cli](https://github.com/skygragon/leetcode-cli) is.
 |----|-----------|-----------------|
 |[company](/docs/company.md)|Filter questions by company or tags|`list`|
 |[cookie.chrome](/docs/cookie.chrome.md)|Don't expire Chrome's session on same computer|`login`|
+|[cookie.firefox](/docs/cookie.firefox.md)|Don't expire Firefox's session on same computer|`login`|
 |[cpp.lint](/docs/cpp.lint.md)|C++ code syntax check|`test`|
 |[cpp.run](/docs/cpp.run.md)|Test C++ code locally|`test`|
 |[github](/docs/github.md)|Commit accpeted code to GitHub|`submit`|
