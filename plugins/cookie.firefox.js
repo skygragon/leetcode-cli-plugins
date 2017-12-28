@@ -1,5 +1,3 @@
-var path = require('path');
-
 var log = require('../log');
 var Plugin = require('../plugin');
 var session = require('../session');
@@ -22,7 +20,7 @@ function getCookieFile(cb) {
       f = process.env.HOME + '/.mozilla/firefox/*.default*/cookies.sqlite';
       break;
     case 'win32':
-      f = path.resolve(process.env.APPDATA || '', '/Mozilla/Firefox/Profiles/*.default*/cookies.sqlite');
+      f = (process.env.APPDATA || '') + '/Mozilla/Firefox/Profiles/*.default*/cookies.sqlite';
       break;
   }
   require('glob')(f, {}, cb);
