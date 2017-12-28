@@ -7,7 +7,7 @@ var session = require('../session');
 
 // [Usage]
 //
-// TODO: still WIP
+// https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/cookie.chrome.md
 //
 var plugin = new Plugin(13, 'cookie.chrome', '2017.12.23',
     'Plugin to reuse Chrome\'s leetcode cookie.',

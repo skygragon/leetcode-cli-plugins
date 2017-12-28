@@ -6,7 +6,7 @@ var session = require('../session');
 
 // [Usage]
 //
-// TODO: still WIP
+// https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/cookie.firefox.md
 //
 var plugin = new Plugin(13, 'cookie.firefox', '2017.12.28',
     'Plugin to reuse firefox\'s leetcode cookie.',
@@ -22,7 +22,7 @@ function getCookieFile(cb) {
       f = process.env.HOME + '/.mozilla/firefox/*.default*/cookies.sqlite';
       break;
     case 'win32':
-      f = path.resolve(process.env.APPDATA || '', '/Local/Mozilla/Firefox/Profiles/*.default*/cookies.sqlite');
+      f = path.resolve(process.env.APPDATA || '', '/Mozilla/Firefox/Profiles/*.default*/cookies.sqlite');
       break;
   }
   require('glob')(f, {}, cb);
