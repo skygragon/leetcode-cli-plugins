@@ -17,7 +17,7 @@ var plugin = new Plugin(100, 'github', '2017.08.10',
 var ctx = {};
 
 plugin.submitProblem = function(problem, cb) {
-  var parts = url.parse(this.config.repo).pathname.split('/');
+  var parts = url.parse(plugin.config.repo).pathname.split('/');
   var filename = path.basename(problem.file);
   parts.push(filename);
 
@@ -28,7 +28,7 @@ plugin.submitProblem = function(problem, cb) {
 
   var GitHubApi = require('github');
   var github = new GitHubApi({host: 'api.github.com'});
-  github.authenticate({type: 'token', token: this.config.token});
+  github.authenticate({type: 'token', token: plugin.config.token});
 
   plugin.next.submitProblem(problem, function(_e, results) {
     cb(_e, results);
