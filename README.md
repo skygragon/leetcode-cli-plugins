@@ -4,7 +4,9 @@
 
 3rd party plugins for leetcode-cli.
 
-See what [leetcode-cli](https://github.com/skygragon/leetcode-cli) is.
+* what is [leetcode-cli](https://github.com/skygragon/leetcode-cli)
+* how to use [leetcode-cli plugins](https://skygragon.github.io/leetcode-cli/commands#plugin)
+* how to use [leetcode-cli configs](https://skygragon.github.io/leetcode-cli/advanced#configuration)
 
 ## Plugins
 
@@ -19,53 +21,24 @@ See what [leetcode-cli](https://github.com/skygragon/leetcode-cli) is.
 |[lintcode](/docs/lintcode.md)|Fight questions from lintcode.com|`list` `show` `test` `submit` `user`|
 |[solution.discuss](/docs/solution.discuss.md)|Fetch top voted solution|`show`|
 
-## HOWTO
+## Quick Start
 
-### Install
+    $ leetcode plugin -i <name>                          # install
+    $ leetcode plugin -d <name>                          # disable
+    $ leetcode plugin -e <name>                          # enable
+    $ leetcode plugin -D <name>                          # delete
 
-Install plugin from this GitHub repo:
+    $ leetcode plugin -c <name>                          # show config
+    $ leetcode config plugins:<name>                     # show config
+    $ leetcode config plugins:<name>:<key> <value>       # set config
+    $ leetcode config -d plugins:<name>                  # delete config
 
-    $ leetcode plugin -i <name>
-    
-*Example*
+**Example**
 
-    $ leetcode plugin -i company
+    $ leetcode plugin -i company                         # install compnay
+    $ leetcode plugin -D compnay                         # delete company
 
-**NOTE: Check [leetcode-cli's plugin guide](https://skygragon.github.io/leetcode-cli/commands#plugin) for more details.**
-
-### Configuration
-
-Some plugins could be configured with your customized options. Please read plugin's doc to see the details.
-
-*Example*
-
-Take `gitHub` plugin for example:
-
-Set configs:
-
-	$ leetcode config plugins:github:token 12345678
-
-Show configs:
-
-	$ leetcode config plugins:github
-	$ leetcode plugin -c github
-
-Delete configs:
-
-	$ leetcode config -d plugins:github
-
-**NOTE: Check [leetcode-cli's configuration guide](https://skygragon.github.io/leetcode-cli/advanced#configuration) for more details.**
-
-### Management
-
-Disable:
-
-	$ leetcode plugin -d <name>
-
-Enable:
-
-	$ leetcode plugin -e <name>
-
-Delete:
-
-	$ leetcode plugin -D <name>
+    $ leetcode plugin -c github                          # show github plugin config
+    $ leetcode config plugins:github                     # show github plugin config
+    $ leetcode config plugins:github:token 12345678      # set github plugin config
+    $ leetcode config -d plugins:github                  # delete github plugin config
