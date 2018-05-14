@@ -17,6 +17,12 @@ var plugin = new Plugin(100, 'github', '2018.03.24',
 var ctx = {};
 
 plugin.submitProblem = function(problem, cb) {
+  // TODO: unify error handling
+  if (!plugin.config.repo)
+    return log.error('GitHub repo not configured correctly! (plugins:github:repo)');
+  if (!plugin.config.token)
+    return log.error('GitHub token not configured correctly! (plugins:github:token)');
+
   var parts = url.parse(plugin.config.repo).pathname.split('/');
   var filename = path.basename(problem.file);
   parts.push(filename);

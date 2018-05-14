@@ -17,6 +17,10 @@ var DEFAULT_FLAGS = [
 ];
 
 plugin.testProblem = function(problem, cb) {
+  // TODO: unify error handling
+  if (!plugin.config.bin)
+    return log.error('cpplint.py not configured correctly! (plugins:cpp.lint:bin)');
+
   var flags = DEFAULT_FLAGS.concat(plugin.config.flags || []);
 
   var cmd = [
