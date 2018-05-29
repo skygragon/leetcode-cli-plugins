@@ -6,7 +6,7 @@ var util = require('util');
 var h = require('../helper');
 var log = require('../log');
 var Plugin = require('../plugin');
-var queue = require('../queue');
+var Queue = require('../queue');
 var session = require('../session');
 
 // Still working in progress!
@@ -18,36 +18,40 @@ var session = require('../session');
 //
 // https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/lintcode.md
 //
-var plugin = new Plugin(15, 'lintcode', '2017.08.04',
+const plugin = new Plugin(15, 'lintcode', '2018.05.29',
     'Plugin to talk with lintcode APIs.');
 
-var config = {
-  URL_BASE:          'http://www.lintcode.com/en',
-  URL_PROBLEMS:      'http://www.lintcode.com/en/problem?page=$page',
-  URL_PROBLEM:       'http://www.lintcode.com/en/problem/$slug/',
-  URL_PROBLEM_CODE:  'http://www.lintcode.com/en/problem/api/code/?problem_id=$id&language=$lang',
-  URL_TEST:          'http://www.lintcode.com/submission/api/submit/',
-  URL_TEST_VERIFY:   'http://www.lintcode.com/submission/api/refresh/?id=$id&waiting_time=0&is_test_submission=true',
-  URL_SUBMIT_VERIFY: 'http://www.lintcode.com/submission/api/refresh/?id=$id&waiting_time=0',
-  URL_LOGIN:         'http://www.lintcode.com/en/accounts/signin/'
+const config = {
+  URL_PROBLEMS:       'https://www.lintcode.com/api/problems/?page=$page',
+  URL_PROBLEM:        'https://www.lintcode.com/problem/$slug/description',
+  URL_PROBLEM_DETAIL: 'https://www.lintcode.com/api/problems/detail/?unique_name_or_alias=$slug&_format=detail',
+  URL_PROBLEM_CODE:   'https://www.lintcode.com/api/problems/$id/reset/?language=$lang',
+  URL_TEST:           'https://www.lintcode.com/api/submissions/',
+  URL_TEST_VERIFY:    'https://www.lintcode.com/api/submissions/refresh/?id=$id&is_test_submission=true',
+  URL_SUBMIT_VERIFY:  'https://www.lintcode.com/api/submissions/refresh/?id=$id',
+  URL_LOGIN:          'https://www.lintcode.com/api/accounts/signin/?next=%2F'
 };
 
-var LANGS = [
+// FIXME: add more langs
+const LANGS = [
   {value: 'cpp', text: 'C++'},
   {value: 'java', text: 'Java'},
   {value: 'python', text: 'Python'}
 ];
 
+var spin;
+
 function signOpts(opts, user) {
   opts.headers.Cookie = 'sessionid=' + user.sessionId +
                         ';csrftoken=' + user.sessionCSRF + ';';
+  opts.headers['x-csrftoken'] = user.sessionCSRF;
 }
 
 function makeOpts(url) {
-  var opts = {};
-  opts.url = url;
-  opts.headers = {};
-
+  const opts = {
+    url:     url,
+    headers: {}
+  };
   if (session.isLogin())
     signOpts(opts, session.getUser());
   return opts;
@@ -55,7 +59,7 @@ function makeOpts(url) {
 
 function checkError(e, resp, expectedStatus) {
   if (!e && resp && resp.statusCode !== expectedStatus) {
-    var code = resp.statusCode;
+    const code = resp.statusCode;
     log.debug('http error: ' + code);
 
     if (code === 403 || code === 401) {
@@ -84,126 +88,111 @@ plugin.getProblems = function(cb) {
   log.debug('running lintcode.getProblems');
 
   var problems = [];
-  var doTask = function(page, taskDone) {
-    plugin.getPageProblems(page, function(e, _problems) {
-      if (!e) problems = problems.concat(_problems);
-      return taskDone(e);
+  const getPage = function(page, queue, cb) {
+    plugin.getPageProblems(page, function(e, _problems, ctx) {
+      if (!e) {
+        problems = problems.concat(_problems);
+        queue.tasks = _.reject(queue.tasks, x => ctx.pages > 0 && x > ctx.pages);
+      }
+      return cb(e);
     });
   };
 
-  // FIXME: remove this hardcoded range!
-  var pages = [0, 1, 2, 3, 4];
-  queue.run(pages, doTask, function(e) {
-    problems = _.sortBy(problems, function(x) {
-      return -x.id;
-    });
+  const pages = _.range(1, 100);
+  const q = new Queue(pages, {}, getPage);
+  spin = h.spin('Downloading problems');
+  q.run(null, function(e, ctx) {
+    spin.stop();
+    problems = _.sortBy(problems, x => -x.id);
     return cb(e, problems);
   });
 };
 
 plugin.getPageProblems = function(page, cb) {
   log.debug('running lintcode.getPageProblems: ' + page);
-  var opts = makeOpts(config.URL_PROBLEMS.replace('$page', page));
+  const opts = makeOpts(config.URL_PROBLEMS.replace('$page', page));
 
+  spin.text = 'Downloading page ' + page;
   request(opts, function(e, resp, body) {
     e = checkError(e, resp, 200);
     if (e) return cb(e);
 
-    var $ = cheerio.load(body);
-    var problems = $('div[id=problem_list_pagination] a').map(function(i, a) {
-      var problem = {
-        locked:    false,
+    const ctx = {};
+    const json = JSON.parse(body);
+    const problems = json.problems.map(function(p, a) {
+      const problem = {
+        id:        p.id, 
+        fid:       p.id,
+        name:      p.title,
+        slug:      p.unique_name,
         category:  'lintcode',
-        state:     'None',
-        starred:   false,
-        companies: [],
+        level:     h.levelToName(p.level),
+        locked:    false,
+        percent:   p.accepted_rate,
+        starred:   p.is_favorited,
+        companies: p.company_tags,
         tags:      []
       };
-      problem.slug = $(a).attr('href').split('/').pop();
       problem.link = config.URL_PROBLEM.replace('$slug', problem.slug);
-
-      $(a).children('span').each(function(i, span) {
-        var text = $(span).text().trim();
-        var type = _split($(span).attr('class'), ' ');
-        type = type.concat(_split($(span).find('i').attr('class'), ' '));
-
-        if (type.indexOf('title') >= 0) {
-          problem.id = Number(text.split('.')[0]);
-          problem.name = text.split('.')[1].trim();
-        } else if (type.indexOf('difficulty') >= 0) problem.level = text;
-        else if (type.indexOf('rate') >= 0) problem.percent = parseInt(text, 10);
-        else if (type.indexOf('fa-star') >= 0) problem.starred = true;
-        else if (type.indexOf('fa-check') >= 0) problem.state = 'ac';
-        else if (type.indexOf('fa-minus') >= 0) problem.state = 'notac';
-        else if (type.indexOf('fa-briefcase') >= 0) problem.companies = _split($(span).attr('title'), ',');
-      });
-
+      switch (p.user_status) {
+        case 'Accepted': problem.state = 'ac'; break;
+        case 'Failed':   problem.state = 'notac'; break;
+        default:         problem.state = 'None';
+      }
       return problem;
-    }).get();
+    });
 
-    return cb(null, problems);
+    ctx.count = json.count;
+    ctx.pages = json.maximum_page;
+    return cb(null, problems, ctx);
   });
 };
 
 plugin.getProblem = function(problem, cb) {
   log.debug('running lintcode.getProblem');
-  var opts = makeOpts(problem.link);
+  const link = config.URL_PROBLEM_DETAIL.replace('$slug', problem.slug);
+  const opts = makeOpts(link);
 
+  const spin = h.spin('Downloading ' + problem.slug);
   request(opts, function(e, resp, body) {
+    spin.stop();
     e = checkError(e, resp, 200);
     if (e) return cb(e);
 
-    var $ = cheerio.load(body);
-    problem.testcase = $('textarea[id=input-testcase]').text();
+    const json = JSON.parse(body);
+    problem.testcase = json.testcase_sample;
     problem.testable = problem.testcase.length > 0;
-
-    var lines = [];
-    $('div[id=description] > div').each(function(i, div) {
-      if (i === 0) {
-        div = $(div).find('div')[0];
-        lines.push($(div).text().trim());
-        return;
-      }
-
-      var text = $(div).text().trim();
-      var type = $(div).find('b').text().trim();
-
-      if (type === 'Tags') {
-        problem.tags = _split(text, '\n');
-        problem.tags.shift();
-      } else if (type === 'Related Problems') return;
-      else lines.push(text);
-    });
-    problem.desc = lines.join('\n').replace(/\n{2,}/g, '\n');
-    problem.totalAC = '';
-    problem.totalSubmit = '';
+    problem.tags = json.tags.map(x => x.name);
+    problem.desc = cheerio.load(json.description).root().text();
+    problem.totalAC = json.total_accepted;
+    problem.totalSubmit = json.total_submissions;
     problem.templates = [];
 
-    var doTask = function(lang, taskDone) {
+    const getLang = function(lang, queue, cb) {
       plugin.getProblemCode(problem, lang, function(e, code) {
-        if (e) return taskDone(e);
-
-        lang = _.clone(lang);
-        lang.defaultCode = code;
-        problem.templates.push(lang);
-        return taskDone();
+        if (!e) {
+          lang = _.clone(lang);
+          lang.defaultCode = code;
+          problem.templates.push(lang);
+        }
+        return cb(e);
       });
     };
 
-    queue.run(LANGS, doTask, function(e) {
-      return cb(e, problem);
-    });
+    const q = new Queue(LANGS, {}, getLang);
+    q.run(null, e => cb(e, problem));
   });
 };
 
 plugin.getProblemCode = function(problem, lang, cb) {
   log.debug('running lintcode.getProblemCode:' + lang.value);
-  var url = config.URL_PROBLEM_CODE
-    .replace('$id', problem.id)
-    .replace('$lang', lang.text.replace(/\+/g, '%2b'));
-  var opts = makeOpts(url);
+  const url = config.URL_PROBLEM_CODE.replace('$id', problem.id)
+                                     .replace('$lang', lang.text.replace(/\+/g, '%2B'));
+  const opts = makeOpts(url);
 
+  const spin = h.spin('Downloading code for ' + lang.text);
   request(opts, function(e, resp, body) {
+    spin.stop();
     e = checkError(e, resp, 200);
     if (e) return cb(e);
 
@@ -213,29 +202,29 @@ plugin.getProblemCode = function(problem, lang, cb) {
 };
 
 function runCode(problem, isTest, cb) {
-  var lang = _.find(LANGS, function(x) {
-    return x.value === h.extToLang(problem.file);
-  });
-
-  var opts = makeOpts(config.URL_TEST);
+  const lang = _.find(LANGS, x => x.value === h.extToLang(problem.file));
+  const opts = makeOpts(config.URL_TEST);
+  opts.headers.referer = problem.link;
   opts.form = {
     problem_id:          problem.id,
     code:                h.getFileData(problem.file),
-    language:            lang.text,
-    csrfmiddlewaretoken: session.getUser().sessionCSRF
+    language:            lang.text
   };
   if (isTest) {
     opts.form.input = problem.testcase;
     opts.form.is_test_submission = true;
   }
 
+  spin = h.spin('Sending code to judge');
   request.post(opts, function(e, resp, body) {
+    spin.stop();
     e = checkError(e, resp, 200);
     if (e) return cb(e);
 
     var json = JSON.parse(body);
-    if (!json.id || !json.success) return cb(json.message);
+    if (!json.id) return cb('Failed to start judge!');
 
+    spin = h.spin('Waiting for judge result');
     verifyResult(json.id, isTest, cb);
   });
 }
@@ -258,6 +247,7 @@ function verifyResult(id, isTest, cb) {
 }
 
 function formatResult(result) {
+  spin.stop();
   var x = {
     ok:              result.status === 'Accepted',
     type:            'Actual',
@@ -290,7 +280,7 @@ plugin.testProblem = function(problem, cb) {
   runCode(problem, true, function(e, result) {
     if (e) return cb(e);
 
-    var expected = {
+    const expected = {
       ok:     true,
       type:   'Expected',
       answer: result.expected_answer,
@@ -322,33 +312,28 @@ plugin.starProblem = function(problem, starred, cb) {
 
 plugin.login = function(user, cb) {
   log.debug('running lintcode.login');
-  request(config.URL_LOGIN, function(e, resp, body) {
-    e = checkError(e, resp, 200);
+  const opts = {
+    url:     config.URL_LOGIN,
+    headers: {
+      'x-csrftoken': null
+    },
+    form: {
+      username_or_email:   user.login,
+      password:            user.pass
+    }
+  };
+
+  const spin = h.spin('Signing in lintcode.com');
+  request.post(opts, function(e, resp, body) {
+    spin.stop();
     if (e) return cb(e);
+    if (resp.statusCode !== 200) return cb('invalid password?');
 
-    user.loginCSRF = h.getSetCookieValue(resp, 'csrftoken');
+    user.sessionCSRF = h.getSetCookieValue(resp, 'csrftoken');
+    user.sessionId = h.getSetCookieValue(resp, 'sessionid');
+    user.name = user.login; // FIXME
 
-    var opts = {
-      url:     config.URL_LOGIN,
-      headers: {
-        Cookie: 'csrftoken=' + user.loginCSRF + ';'
-      },
-      form: {
-        csrfmiddlewaretoken: user.loginCSRF,
-        username_or_email:   user.login,
-        password:            user.pass
-      }
-    };
-    request.post(opts, function(e, resp, body) {
-      if (e) return cb(e);
-      if (resp.statusCode !== 302) return cb('invalid password?');
-
-      user.sessionCSRF = h.getSetCookieValue(resp, 'csrftoken');
-      user.sessionId = h.getSetCookieValue(resp, 'sessionid');
-      user.name = user.login; // FIXME
-
-      return cb(null, user);
-    });
+    return cb(null, user);
   });
 };
 
