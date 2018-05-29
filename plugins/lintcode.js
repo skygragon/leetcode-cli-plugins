@@ -39,6 +39,14 @@ const LANGS = [
   {value: 'python', text: 'Python'}
 ];
 
+const LEVELS = {
+  0: 'Naive',
+  1: 'Easy',
+  2: 'Medium',
+  3: 'Hard',
+  4: 'Super'
+};
+
 var spin;
 
 function signOpts(opts, user) {
@@ -126,7 +134,7 @@ plugin.getPageProblems = function(page, cb) {
         name:      p.title,
         slug:      p.unique_name,
         category:  'lintcode',
-        level:     h.levelToName(p.level),
+        level:     LEVELS[p.level],
         locked:    false,
         percent:   p.accepted_rate,
         starred:   p.is_favorited,
