@@ -4,6 +4,7 @@ var request = require('request');
 var util = require('util');
 
 var h = require('../helper');
+var config = require('../config');
 var log = require('../log');
 var Plugin = require('../plugin');
 var Queue = require('../queue');
@@ -18,19 +19,8 @@ var session = require('../session');
 //
 // https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/lintcode.md
 //
-const plugin = new Plugin(15, 'lintcode', '2018.05.29',
+const plugin = new Plugin(15, 'lintcode', '2018.05.30',
     'Plugin to talk with lintcode APIs.');
-
-const config = {
-  URL_PROBLEMS:       'https://www.lintcode.com/api/problems/?page=$page',
-  URL_PROBLEM:        'https://www.lintcode.com/problem/$slug/description',
-  URL_PROBLEM_DETAIL: 'https://www.lintcode.com/api/problems/detail/?unique_name_or_alias=$slug&_format=detail',
-  URL_PROBLEM_CODE:   'https://www.lintcode.com/api/problems/$id/reset/?language=$lang',
-  URL_TEST:           'https://www.lintcode.com/api/submissions/',
-  URL_TEST_VERIFY:    'https://www.lintcode.com/api/submissions/refresh/?id=$id&is_test_submission=true',
-  URL_SUBMIT_VERIFY:  'https://www.lintcode.com/api/submissions/refresh/?id=$id',
-  URL_LOGIN:          'https://www.lintcode.com/api/accounts/signin/?next=%2F'
-};
 
 // FIXME: add more langs
 const LANGS = [
@@ -92,6 +82,17 @@ function _strip(s) {
   return util.inspect(s.trim());
 }
 
+plugin.init = function() {
+  config.sys.urls.problems       = 'https://www.lintcode.com/api/problems/?page=$page';
+  config.sys.urls.problem        = 'https://www.lintcode.com/problem/$slug/description';
+  config.sys.urls.problem_detail = 'https://www.lintcode.com/api/problems/detail/?unique_name_or_alias=$slug&_format=detail';
+  config.sys.urls.problem_code   = 'https://www.lintcode.com/api/problems/$id/reset/?language=$lang';
+  config.sys.urls.test           = 'https://www.lintcode.com/api/submissions/';
+  config.sys.urls.test_verify    = 'https://www.lintcode.com/api/submissions/refresh/?id=$id&is_test_submission=true';
+  config.sys.urls.submit_verify  = 'https://www.lintcode.com/api/submissions/refresh/?id=$id';
+  config.sys.urls.login          = 'https://www.lintcode.com/api/accounts/signin/?next=%2F';
+};
+
 plugin.getProblems = function(cb) {
   log.debug('running lintcode.getProblems');
 
@@ -118,7 +119,7 @@ plugin.getProblems = function(cb) {
 
 plugin.getPageProblems = function(page, cb) {
   log.debug('running lintcode.getPageProblems: ' + page);
-  const opts = makeOpts(config.URL_PROBLEMS.replace('$page', page));
+  const opts = makeOpts(config.sys.urls.problems.replace('$page', page));
 
   spin.text = 'Downloading page ' + page;
   request(opts, function(e, resp, body) {
@@ -141,7 +142,7 @@ plugin.getPageProblems = function(page, cb) {
         companies: p.company_tags,
         tags:      []
       };
-      problem.link = config.URL_PROBLEM.replace('$slug', problem.slug);
+      problem.link = config.sys.urls.problem.replace('$slug', problem.slug);
       switch (p.user_status) {
         case 'Accepted': problem.state = 'ac'; break;
         case 'Failed':   problem.state = 'notac'; break;
@@ -158,7 +159,7 @@ plugin.getPageProblems = function(page, cb) {
 
 plugin.getProblem = function(problem, cb) {
   log.debug('running lintcode.getProblem');
-  const link = config.URL_PROBLEM_DETAIL.replace('$slug', problem.slug);
+  const link = config.sys.urls.problem_detail.replace('$slug', problem.slug);
   const opts = makeOpts(link);
 
   const spin = h.spin('Downloading ' + problem.slug);
@@ -194,8 +195,8 @@ plugin.getProblem = function(problem, cb) {
 
 plugin.getProblemCode = function(problem, lang, cb) {
   log.debug('running lintcode.getProblemCode:' + lang.value);
-  const url = config.URL_PROBLEM_CODE.replace('$id', problem.id)
-                                     .replace('$lang', lang.text.replace(/\+/g, '%2B'));
+  const url = config.sys.urls.problem_code.replace('$id', problem.id)
+                                          .replace('$lang', lang.text.replace(/\+/g, '%2B'));
   const opts = makeOpts(url);
 
   const spin = h.spin('Downloading code for ' + lang.text);
@@ -211,7 +212,7 @@ plugin.getProblemCode = function(problem, lang, cb) {
 
 function runCode(problem, isTest, cb) {
   const lang = _.find(LANGS, x => x.value === h.extToLang(problem.file));
-  const opts = makeOpts(config.URL_TEST);
+  const opts = makeOpts(config.sys.urls.test);
   opts.headers.referer = problem.link;
   opts.form = {
     problem_id:          problem.id,
@@ -239,7 +240,7 @@ function runCode(problem, isTest, cb) {
 
 function verifyResult(id, isTest, cb) {
   log.debug('running verifyResult:' + id);
-  var url = isTest ? config.URL_TEST_VERIFY : config.URL_SUBMIT_VERIFY;
+  var url = isTest ? config.sys.urls.test_verify : config.sys.urls.submit_verify;
   var opts = makeOpts(url.replace('$id', id));
 
   request(opts, function(e, resp, body) {
@@ -321,7 +322,7 @@ plugin.starProblem = function(problem, starred, cb) {
 plugin.login = function(user, cb) {
   log.debug('running lintcode.login');
   const opts = {
-    url:     config.URL_LOGIN,
+    url:     config.sys.urls.login,
     headers: {
       'x-csrftoken': null
     },

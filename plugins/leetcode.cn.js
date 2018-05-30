@@ -5,7 +5,7 @@ var Plugin = require('../plugin');
 //
 // https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/leetcode.cn.md
 //
-var plugin = new Plugin(15, 'leetcode.cn', '2018.05.29',
+var plugin = new Plugin(15, 'leetcode.cn', '2018.05.30',
     'Plugin to talk with leetcode-cn APIs.');
 
 plugin.init = function() {
@@ -14,7 +14,7 @@ plugin.init = function() {
   config.sys.urls.login           = 'https://leetcode-cn.com/accounts/login/';
   config.sys.urls.problems        = 'https://leetcode-cn.com/api/problems/$category/';
   config.sys.urls.problem         = 'https://leetcode-cn.com/problems/$slug/description/';
-  config.sys.urls.problem_detail  = 'https://leetcode-cn.com/graphql';
+  config.sys.urls.graphql         = 'https://leetcode-cn.com/graphql';
   config.sys.urls.test            = 'https://leetcode-cn.com/problems/$slug/interpret_solution/';
   config.sys.urls.session         = 'https://leetcode-cn.com/session/';
   config.sys.urls.submit          = 'https://leetcode-cn.com/problems/$slug/submit/';
