@@ -9,7 +9,7 @@ var session = require('../session');
 //
 // https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/cookie.chrome.md
 //
-var plugin = new Plugin(13, 'cookie.chrome', '2017.12.23',
+var plugin = new Plugin(13, 'cookie.chrome', '2018.05.30',
     'Plugin to reuse Chrome\'s leetcode cookie.',
     ['ffi:win32', 'keytar:darwin', 'ref:win32', 'ref-struct:win32', 'sqlite3']);
 
@@ -28,7 +28,9 @@ plugin.help = function() {
 var Chrome = {};
 
 var ChromeMAC = {
-  db:          process.env.HOME + '/Library/Application Support/Google/Chrome/Default/Cookies',
+  getDBPath:   function() {
+    return `${process.env.HOME}/Library/Application Support/Google/Chrome/${this.profile}/Cookies`;
+  },
   iterations:  1003,
   getPassword: function(cb) {
     var keytar = require('keytar');
@@ -37,7 +39,9 @@ var ChromeMAC = {
 };
 
 var ChromeLinux = {
-  db:          process.env.HOME + '/.config/google-chrome/Default/Cookies',
+  getDBPath:   function() {
+    return `${process.env.HOME}/.config/google-chrome/${this.profile}/Cookies`;
+  },
   iterations:  1,
   getPassword: function(cb) {
     // FIXME: keytar failed to read gnome-keyring on ubuntu??
@@ -48,7 +52,9 @@ var ChromeLinux = {
 };
 
 var ChromeWindows = {
-  db:          path.resolve(process.env.APPDATA || '', '../Local/Google/Chrome/User Data/Default/Cookies'),
+  getDBPath:   function() {
+    return path.resolve(process.env.APPDATA || '', `../Local/Google/Chrome/User Data/${this.profile}/Cookies`);
+  },
   getPassword: function(cb) { cb(); }
 };
 
@@ -124,7 +130,7 @@ function doDecode(key, queue, cb) {
 
 Chrome.getCookies = function(cb) {
   var sqlite3 = require('sqlite3');
-  var db = new sqlite3.Database(my.db);
+  var db = new sqlite3.Database(my.getDBPath());
   var KEYS = ['csrftoken', 'LEETCODE_SESSION'];
 
   db.serialize(function() {
@@ -149,9 +155,12 @@ Chrome.getCookies = function(cb) {
 plugin.signin = function(user, cb) {
   log.debug('running cookie.chrome.signin');
   log.debug('try to copy leetcode cookies from chrome ...');
+
+  my.profile = plugin.config.profile || 'Default';
   my.getCookies(function(e, cookies) {
     if (e) {
-      log.error('failed to copy cookies: ' + e);
+      log.error(`Failed to copy cookies from profile "${my.profile}"`);
+      log.error(e);
       return plugin.next.signin(user, cb);
     }
 

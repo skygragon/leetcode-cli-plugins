@@ -26,6 +26,28 @@ Make sure build environment is ready before installing plugin:
 	$ npm install -g windows-build-tools
 	$ npm config set msvs_version 2015 -g
 
+## Config
+
+* `profile`: chrome profile in use, default value is "Default".
+
+*Set Config*
+
+	$ leetcode config plugins:cookie.chrome:profile "Your Profile"
+
+*Unset Config*
+
+	$ leetcode config -d plugins:cookie.chrome
+
+*Example*
+
+	{
+		"plugins": {
+			"cookie.chrome": {
+				"profile": "Profile 2"
+			}
+		}
+	}
+
 ## Usage
 
 If enabled, the login will try to reuse existing chrome cookies. You can verify it by printing debug output as below.
