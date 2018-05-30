@@ -18,6 +18,7 @@
 |[cpp.lint](/docs/cpp.lint.md)|C++ code syntax check|`test`|
 |[cpp.run](/docs/cpp.run.md)|Test C++ code locally|`test`|
 |[github](/docs/github.md)|Commit accpeted code to GitHub|`submit`|
+|[leetcode.cn](/docs/leetcode.cn.md)|Fight questions from leetcode-cn.com||
 |[lintcode](/docs/lintcode.md)|Fight questions from lintcode.com|`list` `show` `test` `submit` `user`|
 |[solution.discuss](/docs/solution.discuss.md)|Fetch top voted solution|`show`|
 
