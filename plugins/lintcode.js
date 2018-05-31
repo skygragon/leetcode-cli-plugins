@@ -83,6 +83,7 @@ function _strip(s) {
 }
 
 plugin.init = function() {
+  config.sys.urls.base           = 'https://www.lintcode.com';
   config.sys.urls.problems       = 'https://www.lintcode.com/api/problems/?page=$page';
   config.sys.urls.problem        = 'https://www.lintcode.com/problem/$slug/description';
   config.sys.urls.problem_detail = 'https://www.lintcode.com/api/problems/detail/?unique_name_or_alias=$slug&_format=detail';
