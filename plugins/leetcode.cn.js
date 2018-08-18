@@ -5,7 +5,7 @@ var Plugin = require('../plugin');
 //
 // https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/leetcode.cn.md
 //
-var plugin = new Plugin(15, 'leetcode.cn', '2018.05.30',
+var plugin = new Plugin(15, 'leetcode.cn', '2018.08.18',
     'Plugin to talk with leetcode-cn APIs.');
 
 plugin.init = function() {
