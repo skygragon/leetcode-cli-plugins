@@ -5,11 +5,12 @@ var Plugin = require('../plugin');
 //
 // https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/leetcode.cn.md
 //
-var plugin = new Plugin(15, 'leetcode.cn', '2018.05.30',
+var plugin = new Plugin(15, 'leetcode.cn', '2018.10.28',
     'Plugin to talk with leetcode-cn APIs.');
 
 plugin.init = function() {
   const config = require('../config');
+  config.app = 'leetcode.cn';
   config.sys.urls.base            = 'https://leetcode-cn.com';
   config.sys.urls.login           = 'https://leetcode-cn.com/accounts/login/';
   config.sys.urls.problems        = 'https://leetcode-cn.com/api/problems/$category/';

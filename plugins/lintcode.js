@@ -19,7 +19,7 @@ var session = require('../session');
 //
 // https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/lintcode.md
 //
-const plugin = new Plugin(15, 'lintcode', '2018.05.30',
+const plugin = new Plugin(15, 'lintcode', '2018.10.28',
     'Plugin to talk with lintcode APIs.');
 
 // FIXME: add more langs
@@ -83,6 +83,7 @@ function _strip(s) {
 }
 
 plugin.init = function() {
+  config.app = 'lintcode';
   config.sys.urls.base           = 'https://www.lintcode.com';
   config.sys.urls.problems       = 'https://www.lintcode.com/api/problems/?page=$page';
   config.sys.urls.problem        = 'https://www.lintcode.com/problem/$slug/description';
