@@ -11,7 +11,7 @@ var Plugin = require('../plugin');
 //
 // https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/github.md
 //
-var plugin = new Plugin(100, 'github', '2018.03.24',
+var plugin = new Plugin(100, 'github', '2018.11.18',
     'Plugin to commit accepted code to your own github repo.',
     ['github@13']);
 

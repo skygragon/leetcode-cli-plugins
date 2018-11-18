@@ -20,7 +20,7 @@ var session = require('../session');
 //
 // https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/lintcode.md
 //
-const plugin = new Plugin(15, 'lintcode', '2018.10.28',
+const plugin = new Plugin(15, 'lintcode', '2018.11.18',
     'Plugin to talk with lintcode APIs.');
 
 // FIXME: add more langs

@@ -9,7 +9,7 @@ var session = require('../session');
 //
 // https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/cookie.chrome.md
 //
-var plugin = new Plugin(13, 'cookie.chrome', '2018.05.30',
+var plugin = new Plugin(13, 'cookie.chrome', '2018.11.18',
     'Plugin to reuse Chrome\'s leetcode cookie.',
     ['ffi:win32', 'keytar:darwin', 'ref:win32', 'ref-struct:win32', 'sqlite3']);
 
@@ -18,7 +18,7 @@ plugin.help = function() {
     case 'darwin':
       break;
     case 'linux':
-      log.info('To complete the install: sudo apt install libsecret-tools');
+      log.warn('To complete the install: sudo apt install libsecret-tools');
       break;
     case 'win32':
       break;
@@ -131,6 +131,7 @@ function doDecode(key, queue, cb) {
 Chrome.getCookies = function(cb) {
   var sqlite3 = require('sqlite3');
   var db = new sqlite3.Database(my.getDBPath());
+  db.on('error', cb);
   var KEYS = ['csrftoken', 'LEETCODE_SESSION'];
 
   db.serialize(function() {
