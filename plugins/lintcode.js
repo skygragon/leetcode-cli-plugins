@@ -4,6 +4,7 @@ var request = require('request');
 var util = require('util');
 
 var h = require('../helper');
+var file = require('../file');
 var config = require('../config');
 var log = require('../log');
 var Plugin = require('../plugin');
@@ -218,7 +219,7 @@ function runCode(problem, isTest, cb) {
   opts.headers.referer = problem.link;
   opts.form = {
     problem_id:          problem.id,
-    code:                h.getFileData(problem.file),
+    code:                file.data(problem.file),
     language:            lang.text
   };
   if (isTest) {

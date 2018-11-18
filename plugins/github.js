@@ -2,6 +2,7 @@ var path = require('path');
 var url = require('url');
 
 var h = require('../helper');
+var file = require('../file');
 var log = require('../log');
 var Plugin = require('../plugin');
 
@@ -47,7 +48,7 @@ plugin.submitProblem = function(problem, cb) {
       }
 
       ctx.message = 'update ' + filename;
-      ctx.content = new Buffer(h.getFileData(problem.file)).toString('base64');
+      ctx.content = new Buffer(file.data(problem.file)).toString('base64');
 
       var onFileDone = function(e, res) {
         if (e)
