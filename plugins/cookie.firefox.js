@@ -6,7 +6,7 @@ var session = require('../session');
 //
 // https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/cookie.firefox.md
 //
-var plugin = new Plugin(13, 'cookie.firefox', '2017.12.28',
+var plugin = new Plugin(13, 'cookie.firefox', '2018.11.19',
     'Plugin to reuse firefox\'s leetcode cookie.',
     ['glob', 'sqlite3']);
 
@@ -55,7 +55,12 @@ plugin.signin = function(user, cb) {
   log.debug('try to copy leetcode cookies from firefox ...');
   getCookies(function(e, cookies) {
     if (e) {
-      log.error('failed to copy cookies: ' + e);
+      log.error('Failed to copy cookies: ' + e);
+      return plugin.next.signin(user, cb);
+    }
+
+    if (!cookies.LEETCODE_SESSION || !cookies.csrftoken) {
+      log.error('Got invalid cookies: ' + JSON.stringify(cookies));
       return plugin.next.signin(user, cb);
     }
 
