@@ -218,9 +218,9 @@ function runCode(problem, isTest, cb) {
   const opts = makeOpts(config.sys.urls.test);
   opts.headers.referer = problem.link;
   opts.form = {
-    problem_id:          problem.id,
-    code:                file.data(problem.file),
-    language:            lang.text
+    problem_id: problem.id,
+    code:       file.data(problem.file),
+    language:   lang.text
   };
   if (isTest) {
     opts.form.input = problem.testcase;
@@ -330,8 +330,8 @@ plugin.login = function(user, cb) {
       'x-csrftoken': null
     },
     form: {
-      username_or_email:   user.login,
-      password:            user.pass
+      username_or_email: user.login,
+      password:          user.pass
     }
   };
 

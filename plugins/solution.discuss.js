@@ -1,5 +1,4 @@
 var _ = require('underscore');
-var cheerio = require('cheerio');
 var request = require('request');
 
 var log = require('../log');
@@ -24,7 +23,7 @@ function getSolution(problem, lang, cb) {
   var opts = {
     url:  URL_DISCUSSES,
     json: true,
-    qs: {
+    qs:   {
       query: [
         'query fetchTopics($questionId: Int!, $pageNo: Int!, $orderBy: String!) {',
         '  questionTopics(questionId: $questionId, pageNo: $pageNo, orderBy: $orderBy) {',
@@ -42,8 +41,9 @@ function getSolution(problem, lang, cb) {
         '  }',
         '}'
       ].join('\n'),
+
       operationName: 'fetchTopics',
-      variables: JSON.stringify({
+      variables:     JSON.stringify({
         pageNo:     1,
         orderBy:    'most_votes',
         questionId: problem.id

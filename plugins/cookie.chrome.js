@@ -28,7 +28,7 @@ plugin.help = function() {
 var Chrome = {};
 
 var ChromeMAC = {
-  getDBPath:   function() {
+  getDBPath: function() {
     return `${process.env.HOME}/Library/Application Support/Google/Chrome/${this.profile}/Cookies`;
   },
   iterations:  1003,
@@ -39,7 +39,7 @@ var ChromeMAC = {
 };
 
 var ChromeLinux = {
-  getDBPath:   function() {
+  getDBPath: function() {
     return `${process.env.HOME}/.config/google-chrome/${this.profile}/Cookies`;
   },
   iterations:  1,
@@ -52,7 +52,7 @@ var ChromeLinux = {
 };
 
 var ChromeWindows = {
-  getDBPath:   function() {
+  getDBPath: function() {
     return path.resolve(process.env.APPDATA || '', `../Local/Google/Chrome/User Data/${this.profile}/Cookies`);
   },
   getPassword: function(cb) { cb(); }

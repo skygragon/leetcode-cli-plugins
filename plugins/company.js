@@ -21,6 +21,7 @@ var COMPONIES = {
   '5': ['amazon', 'bloomberg', 'microsoft'],
   '7': ['apple', 'bloomberg'],
   '8': ['amazon', 'bloomberg', 'microsoft', 'uber'],
+
   '10': ['airbnb', 'facebook', 'google', 'twitter', 'uber'],
   '11': ['bloomberg'],
   '12': ['twitter'],
@@ -84,6 +85,7 @@ var COMPONIES = {
   '94': ['microsoft'],
   '96': ['snapchat'],
   '98': ['amazon', 'bloomberg', 'facebook', 'microsoft'],
+
   '100': ['bloomberg'],
   '101': ['bloomberg', 'linkedin', 'microsoft'],
   '102': ['amazon', 'apple', 'bloomberg', 'facebook', 'linkedin', 'microsoft'],
@@ -532,6 +534,7 @@ var TAGS = {
   '7': ['math'],
   '8': ['math', 'string'],
   '9': ['math'],
+
   '10': ['backtracking', 'dynamic-programming', 'string'],
   '11': ['array', 'two-pointers'],
   '12': ['math', 'string'],
@@ -622,6 +625,7 @@ var TAGS = {
   '97': ['dynamic-programming', 'string'],
   '98': ['depth-first-search', 'tree'],
   '99': ['depth-first-search', 'tree'],
+
   '100': ['depth-first-search', 'tree'],
   '101': ['breadth-first-search', 'depth-first-search', 'tree'],
   '102': ['breadth-first-search', 'tree'],

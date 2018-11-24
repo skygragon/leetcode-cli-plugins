@@ -48,7 +48,7 @@ function getCookies(cb) {
       });
     });
   });
-};
+}
 
 plugin.signin = function(user, cb) {
   log.debug('running cookie.firefox.signin');
