@@ -1,4 +1,3 @@
-var _ = require('underscore');
 var request = require('request');
 
 var log = require('../log');
@@ -25,7 +24,7 @@ function getSolution(problem, lang, cb) {
   var opts = {
     url:  URL_DISCUSSES,
     json: true,
-    body:  {
+    body: {
       query: [
         'query questionTopicsList($questionId: String!, $orderBy: TopicSortingOption, $skip: Int, $query: String, $first: Int!, $tags: [String!]) {',
         '  questionTopicsList(questionId: $questionId, orderBy: $orderBy, skip: $skip, query: $query, first: $first, tags: $tags) {',
