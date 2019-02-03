@@ -11,7 +11,7 @@ var session = require('../session');
 //
 // https://github.com/skygragon/leetcode-cli-plugins/blob/master/docs/solution.discuss.md
 //
-var plugin = new Plugin(200, 'solution.discuss', '2018.04.14',
+var plugin = new Plugin(200, 'solution.discuss', '2019.02.03',
     'Plugin to fetch most voted solution in discussions.');
 
 var URL_DISCUSSES = 'https://leetcode.com/graphql';
@@ -20,14 +20,22 @@ var URL_DISCUSS = 'https://leetcode.com/problems/$slug/discuss/$id';
 function getSolution(problem, lang, cb) {
   if (!problem) return cb();
 
+  if (lang === 'python3') lang = 'python';
+
   var opts = {
     url:  URL_DISCUSSES,
     json: true,
-    qs:   {
+    body:  {
       query: [
-        'query fetchTopics($questionId: Int!, $pageNo: Int!, $orderBy: String!) {',
-        '  questionTopics(questionId: $questionId, pageNo: $pageNo, orderBy: $orderBy) {',
-        '    data {',
+        'query questionTopicsList($questionId: String!, $orderBy: TopicSortingOption, $skip: Int, $query: String, $first: Int!, $tags: [String!]) {',
+        '  questionTopicsList(questionId: $questionId, orderBy: $orderBy, skip: $skip, query: $query, first: $first, tags: $tags) {',
+        '    ...TopicsList',
+        '  }',
+        '}',
+        'fragment TopicsList on TopicConnection {',
+        '  totalNum',
+        '  edges {',
+        '    node {',
         '      id',
         '      title',
         '      post {',
@@ -42,11 +50,14 @@ function getSolution(problem, lang, cb) {
         '}'
       ].join('\n'),
 
-      operationName: 'fetchTopics',
+      operationName: 'questionTopicsList',
       variables:     JSON.stringify({
-        pageNo:     1,
+        query:      '',
+        first:      1,
+        skip:       0,
         orderBy:    'most_votes',
-        questionId: problem.id
+        questionId: '' + problem.id,
+        tags:       [lang]
       })
     }
   };
@@ -55,23 +66,8 @@ function getSolution(problem, lang, cb) {
     if (resp.statusCode !== 200)
       return cb({msg: 'http error', statusCode: resp.statusCode});
 
-    var langs = [lang];
-    // try to find more compatible langs
-    if (lang === 'cpp') langs.push('c++');
-    if (lang === 'csharp') langs.push('c#');
-    if (lang === 'golang') langs.push('go');
-    if (lang === 'javascript') langs.push('js');
-    if (lang === 'python3') langs.push('python');
-
-    var solutions = body.data.questionTopics.data;
-    var solution = _.find(solutions, function(x) {
-      var keys = x.title.toLowerCase().split(/[^\w+]/);
-      for (var i = 0; i < keys.length; ++i) {
-        if (langs.indexOf(keys[i]) >= 0) return true;
-      }
-      return false;
-    });
-
+    const solutions = body.data.questionTopicsList.edges;
+    const solution = solutions.length > 0 ? solutions[0].node : null;
     return cb(null, solution);
   });
 }
