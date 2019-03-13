@@ -74,7 +74,7 @@ plugin.getProblems = function(cb) {
       if (e) return cb(e);
 
       problems.forEach(function(problem) {
-        const title = titles[problem.fid];
+        const title = titles[problem.id];
         if (title)
           problem.name = title;
       });
