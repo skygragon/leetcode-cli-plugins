@@ -8,7 +8,7 @@ Auto commit the accepted code to your own (public) GitHub repo.
 
 ## Config
 
-* `repo`: your GitHub repo to persistent accpeted code.
+* `repo`: your GitHub repo to persistent accepted code.
 * `token`: the access token to your repo, see [how to get token](#generate-token).
 
 *Set Config*
