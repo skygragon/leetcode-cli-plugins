@@ -34,9 +34,14 @@ function getCookies(cb) {
     var db = new sqlite3.Database(files[0]);
     var KEYS = ['csrftoken', 'LEETCODE_SESSION'];
 
+    let host = config.sys.cookie_host;
+    if (!host) {
+      host = 'leetcode.com';      // default host key
+    }
+
     db.serialize(function() {
       var cookies = {};
-      var sql = 'select name, value from moz_cookies where host like "%leetcode.com"';
+      var sql = 'select name, value from moz_cookies where host like "%' + host +'"';
       db.each(sql, function(e, x) {
         if (e) return cb(e);
         if (KEYS.indexOf(x.name) < 0) return;
