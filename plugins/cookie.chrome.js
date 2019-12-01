@@ -134,9 +134,14 @@ Chrome.getCookies = function(cb) {
   db.on('error', cb);
   var KEYS = ['csrftoken', 'LEETCODE_SESSION'];
 
+  let host = config.sys.cookie_host;
+  if (!host) {
+    host = 'leetcode.com';      // default host key
+  }
+
   db.serialize(function() {
     var cookies = {};
-    var sql = 'select name, encrypted_value from cookies where host_key like "%leetcode.com"';
+    var sql = 'select name, encrypted_value from cookies where host_key like "%' + host +'"';
     db.each(sql, function(e, x) {
       if (e) return cb(e);
       if (KEYS.indexOf(x.name) < 0) return;

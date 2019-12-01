@@ -31,6 +31,7 @@ plugin.init = function() {
   config.sys.urls.verify          = 'https://leetcode-cn.com/submissions/detail/$id/check/';
   config.sys.urls.favorites       = 'https://leetcode-cn.com/list/api/questions';
   config.sys.urls.favorite_delete = 'https://leetcode-cn.com/list/api/questions/$hash/$id';
+  config.sys.cookie_host          = 'leetcode-cn.com';
 };
 
 // FIXME: refactor those
