@@ -1,6 +1,7 @@
 var log = require('../log');
 var Plugin = require('../plugin');
 var session = require('../session');
+var config = require('../config');
 
 // [Usage]
 //

@@ -4,6 +4,7 @@ var log = require('../log');
 var Plugin = require('../plugin');
 var Queue = require('../queue');
 var session = require('../session');
+var config = require('../config');
 
 // [Usage]
 //
