@@ -4,6 +4,7 @@ var log = require('../log');
 var Plugin = require('../plugin');
 var Queue = require('../queue');
 var session = require('../session');
+const GetLinuxDesktopEnv = require('desktop-env');
 
 // [Usage]
 //
@@ -42,11 +43,18 @@ var ChromeLinux = {
   getDBPath: function() {
     return `${process.env.HOME}/.config/google-chrome/${this.profile}/Cookies`;
   },
-  iterations:  1,
-  getPassword: function(cb) {
+  iterations: 1,
+  getPassword: async function (cb) {
     // FIXME: keytar failed to read gnome-keyring on ubuntu??
-    var cmd = 'secret-tool lookup application chrome';
-    var password = require('child_process').execSync(cmd).toString();
+    var cmd = '';
+    switch (await GetLinuxDesktopEnv()) {
+      case "KDE":
+        cmd = 'kwallet-query -r "Chrome Safe Storage" -f "Chrome Keys"  kdewallet';
+        break;
+      default:
+        cmd = 'secret-tool lookup application chrome';
+    }
+    var password = require('child_process').execSync(cmd).toString().trim();
     return cb(password);
   }
 };
