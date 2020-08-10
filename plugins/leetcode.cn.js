@@ -77,6 +77,7 @@ plugin.getProblems = function(cb) {
         const title = titles[problem.fid];
         if (title)
           problem.name = title;
+        problem.fid = parseInt(problem.fid);
       });
 
       return cb(null, problems);
@@ -97,9 +98,7 @@ plugin.getProblemsTitle = function(cb) {
       'query getQuestionTranslation($lang: String) {',
       '  translations: allAppliedQuestionTranslations(lang: $lang) {',
       '    title',
-      '    question {',
-      '      questionId',
-      '    }',
+      '    questionId',
       '  }',
       '}',
       ''
@@ -116,7 +115,7 @@ plugin.getProblemsTitle = function(cb) {
 
     const titles = [];
     body.data.translations.forEach(function(x) {
-      titles[x.question.questionId] = x.title;
+      titles[x.questionId] = x.title;
     });
 
     return cb(null, titles);
